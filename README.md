@@ -22,13 +22,13 @@ A Mac app that makes PNG, JPEG, AVIF, SVG, and PDF files smaller without changin
 - Illustrator (AI) files convert to PDF (artboard and transparency kept, private Illustrator data dropped) or to SVG for the web, with an option to crop the empty margin around the artwork. The SVG conversion covers paths, strokes, gradients, clipping, and CMYK and spot colors, and a note on the row says what it could not carry over, such as live text. Outline the text in Illustrator first.
 - Three quality levels: Smaller, Balanced, and Closest.
 - Keeps each file's format, picks the smaller of PNG and JPEG per file, or converts everything to PNG, JPEG, or AVIF.
-- Limits the longest side of large images (1024, 2048, 2560, or 4096 px), sets a 72 or 96 dpi tag, and removes camera and location data from JPEGs. A photo saved sideways is rotated upright first.
+- Limits the longest side of large images (1024, 2048, 2560, or 4096 px), and removes camera and location data from JPEGs. A photo saved sideways is rotated upright first.
 - Safe by default: the result is saved beside the original with a suffix you choose (`-min`). Or it replaces the file and the original goes to the Trash or to an `.originals` folder. Undo puts the last batch back.
 - Before and after preview with a draggable slider, a Fit view, and a 100% view you can pan, so you can judge the quality at real pixels. Arrow keys step through the batch.
 - Folders and batches: a dropped folder or more than ten files waits in a list until you press Compress. Files run in parallel on all cores, each row fills as it progresses, and Stop cancels the rest.
 - Ways in: drag onto the window or the Dock icon, Choose…, the Finder right-click menu (Quick Actions › Compress with ImageKit), a global shortcut that compresses what is selected in Finder (⌘⇧K by default, configurable), and the menu bar icon.
 - Works in the background: files dropped on the menu bar icon, sent by the shortcut or by the Quick Action are compressed with your settings without opening the window, the menu bar icon shows the progress as a percentage, and a notification says what was saved.
-- Shows in the Dock, the menu bar, or both.
+- Lives in the menu bar: the Dock icon is there while the window is open and goes away when you close it.
 - Marks the files it makes, so a compressed file is not squeezed a second time and does not lose more quality.
 - Checks for updates with Sparkle, daily and on every launch.
 
