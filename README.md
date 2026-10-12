@@ -27,7 +27,7 @@ A Mac app that makes PNG, JPEG, AVIF, SVG, and PDF files smaller without changin
 - Before and after preview with a draggable slider, a Fit view, and a 100% view you can pan, so you can judge the quality at real pixels. Arrow keys step through the batch.
 - Folders and batches: a dropped folder or more than ten files waits in a list until you press Compress. Files run in parallel on all cores, each row fills as it progresses, and Stop cancels the rest.
 - Ways in: drag onto the window or the Dock icon, Choose…, the Finder right-click menu (Quick Actions › Compress with ImageKit), a global shortcut that compresses what is selected in Finder (⌘⇧K by default, configurable), and the menu bar icon.
-- Works in the background: files dropped on the menu bar icon, sent by the shortcut or by the Quick Action are compressed with your settings without opening the window, and a notification says what was saved.
+- Works in the background: files dropped on the menu bar icon, sent by the shortcut or by the Quick Action are compressed with your settings without opening the window, the menu bar icon shows the progress as a percentage, and a notification says what was saved.
 - Shows in the Dock, the menu bar, or both.
 - Marks the files it makes, so a compressed file is not squeezed a second time and does not lose more quality.
 - Checks for updates with Sparkle, daily and on every launch.
