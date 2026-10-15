@@ -43,6 +43,32 @@ Download the latest DMG from [Releases](https://github.com/tretten/imagekit/rele
 
 To get the right-click menu, open System Settings › Extensions › Finder (or Quick Actions) and turn on **Compress with ImageKit**.
 
+## Command line
+
+The app ships a command line tool at `ImageKit.app/Contents/Helpers/imagekit`. Settings › General has an Install button that links it to `/usr/local/bin/imagekit`, so you can just run `imagekit`.
+
+```sh
+imagekit photo.png                  # photo-min.png beside the original
+imagekit --to avif *.png            # convert everything to AVIF
+imagekit --replace photo.jpg        # replace it; the original goes to .originals
+imagekit --dry-run folder/          # say what would happen, write nothing
+imagekit --inspect photo.heic       # format, size, transparency
+imagekit --diff before.png after.png  # how alike two pictures are
+imagekit --help                     # every flag, with defaults
+```
+
+The flags match the app: `--level smaller|balanced|careful`, `--max`, `--strip`, `--suffix`, `--again`, SVG and PDF options. `--json` prints one report per file plus a summary line (fields: source, output, state, before, after, saved, note, backup). Exit codes: 0 everything done or unchanged, 1 something failed, 2 bad flags or paths, 3 nothing to process.
+
+## Use with AI agents (MCP)
+
+The same tool is an MCP server, so coding agents can compress, inspect, and compare images themselves:
+
+```sh
+claude mcp add imagekit -- /Applications/ImageKit.app/Contents/Helpers/imagekit mcp
+```
+
+Tools: `compress` (files or folders), `inspect` (format, size, alpha), `diff` (two pictures plus a verdict), `capabilities` (formats, levels, limits), `undo` (bring back the originals). Safe by default: originals are never replaced unless `replace` is set (they go to `.originals`), and a folder or more than 50 files needs an explicit confirmation.
+
 ## Third-party software
 
 ImageKit includes [Zopfli](https://github.com/google/zopfli) (Apache 2.0), [mozjpeg](https://github.com/mozilla/mozjpeg) (IJG, BSD, and zlib licenses), and [Sparkle](https://sparkle-project.org) (MIT). The full notices are in the app under Settings › About.
