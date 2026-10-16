@@ -39,7 +39,8 @@ A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and
 - Checks for updates with Sparkle, daily and on every launch.
 
 <p align="center">
-  <img src="ImageKit-compare.avif" width="899" alt="Before and after preview with a draggable slider">
+  <img src="ImageKit-compare.avif" width="899" alt="Before and after preview with a draggable slider"><br>
+  <img src="ImageKit-results.avif" width="899" alt="A batch of files with the size saved on each">
 </p>
 
 ## Privacy
