@@ -25,7 +25,7 @@ Typical flow: `inspect` then `compress` (default `level: "balanced"`), `diff` if
 ## Rules
 
 - Results go beside the original with `-min` added. Originals are untouched unless `replace: true` (then the original goes to `.originals` beside it). Do not set `replace` unless the user asked.
-- A folder or more than 50 files needs `confirm_batch: true`. Tell the user the count before you set it.
+- A folder or more than 50 files needs `confirm_batch: true`. Tell the user the count before you set it. After 200 files in one session without it, every call needs it.
 - `/`, the home folder, `~/Library` and `.app` insides are refused.
 - A file ImageKit already made is skipped ("Already compressed by ImageKit."); `again: true` squeezes it again and loses a little more.
 - Animated GIF, PNG and AVIF are left unchanged. `state: "unchanged"` with a `note` is a normal outcome (nothing smaller was found), not an error.

@@ -74,12 +74,12 @@ Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF 
 
 | Flag | Meaning |
 |---|---|
-| `--level smaller\|balanced\|careful` | One setting for all formats (default `balanced`). Sets the picture checks, SVG digits, and PDF quality; the flags below override it. |
+| `--level smaller\|balanced\|careful` | One setting for all formats (default `balanced`; `closest` is an alias for `careful`). Sets the picture checks, SVG digits, and PDF quality; the flags below override it. |
 | `--to png\|jpg\|avif` | Raster files become this format. Without it each file keeps its format. |
 | `--convert` | Per file, the smaller of PNG and JPEG when clearly smaller. |
 | `--to pdf\|svg` | Vector files become this format (SVG to PDF, PDF to SVG, AI to PDF or SVG). |
 | `--max N` | Longest side in pixels; smaller pictures are not enlarged. `0` keeps (default). |
-| `--strip` | Drop EXIF, GPS, XMP, and comments from JPEGs. Kept by default. |
+| `--strip` | Drop EXIF (with GPS), IPTC, XMP, and comments from JPEGs. Kept by default. |
 | `--suffix S` | Added to the result name (default `-min`; not empty, no `/` or `..`). |
 | `--replace` | The result takes the file's name; the original moves to `.originals` beside it. Wins over `--suffix`. |
 | `--output-dir DIR` | Results go here (created if missing). Not with `--replace`. |
@@ -88,12 +88,12 @@ Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF 
 | `--effort N`, `--dither`, `--no-dither` | PNG: Zopfli passes 0...15 (default 3); error diffusion (default on). |
 | `--svg-precision N` | Digits kept in SVG coordinates, 1...3. |
 | `--pdf-level L`, `--pdf-dpi N` | PDF picture quality (`smaller\|balanced\|closest`) and the DPI above which images scale down (`0` keeps). |
-| `--no-crop`, `--pdf-crop` | SVG from PDF keeps the whole page; PDF from AI is cut to the drawing. |
+| `--no-crop`, `--pdf-crop` | `--no-crop`: SVG made from PDF or AI keeps the whole page. `--pdf-crop`: a PDF made from AI is cut to the drawing. |
 | `--dry-run` | Detect and report; write nothing. |
 | `--inspect` | Report what each file is; encode nothing. |
 | `--json` | NDJSON on stdout: one object per file as it finishes, then `{"summary": ...}`. |
 | `--timeout SECONDS` | Per file. On expiry that file fails and the rest go on. |
-| `--diff a b` | Compare two pictures of the same size (add `--json` for an object). |
+| `--diff a b` | Compare two pictures of the same size (add `--json` for an object). Must be the first argument. |
 | `--capabilities`, `--version`, `--help` | |
 
 Anything unknown, out of range, or missing a value is an error on stderr, never silently ignored.
@@ -165,7 +165,7 @@ A good order: `inspect` to see what you have, `compress` with the default level,
 ### Safety rules the server enforces
 
 - Originals are never replaced unless `replace: true`. Then the original moves to `.originals` beside the file, never the Trash and never deleted.
-- A folder, or more than 50 files, is refused unless `confirm_batch: true`; the error tells you the count.
+- A folder, or more than 50 files, is refused unless `confirm_batch: true`; the error tells you the count. After 200 files have gone through in one session without it, every call needs it.
 - `/`, the home folder, `~/Library`, and the insides of `.app` bundles are refused. Symlinks are resolved first.
 - One batch at a time. A second `compress` while one runs returns "busy".
 - Failures come back as a normal result with `isError: true` and a message, not as a protocol error.
