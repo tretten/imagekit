@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-A Mac app that makes PNG, JPEG, AVIF, SVG, and PDF files smaller without changing how they look, and turns Illustrator logos into PDF or SVG. Drop files or folders on it, or right-click a file in Finder, and compare the result with the original before you keep it. Everything runs on your Mac; nothing is uploaded.
+A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and PDF files smaller without changing how they look, and turns Illustrator logos into PDF or SVG. Drop files or folders on it, or right-click a file in Finder, and compare the result with the original before you keep it. Everything runs on your Mac; nothing is uploaded.
 </p>
 
 <p align="center">
@@ -31,6 +31,7 @@ A Mac app that makes PNG, JPEG, AVIF, SVG, and PDF files smaller without changin
 - Works in the background: files dropped on the menu bar icon, sent by the shortcut or by the Quick Action are compressed with your settings without opening the window, the menu bar icon shows the progress as a percentage, and a notification says what was saved.
 - Lives in the menu bar: the Dock icon is there while the window is open and goes away when you close it.
 - Marks the files it makes, so a compressed file is not squeezed a second time and does not lose more quality.
+- Command line tool and MCP server for scripts and coding agents, in the same app (see below).
 - Checks for updates with Sparkle, daily and on every launch.
 
 ## Privacy
@@ -41,33 +42,137 @@ Runs entirely on your Mac. No analytics, no uploads. The only network connection
 
 Download the latest DMG from [Releases](https://github.com/tretten/imagekit/releases), drag ImageKit to Applications, and open it. Builds are signed and notarized. Requires macOS 14 (Sonoma) or later on a Mac with Apple silicon.
 
+Or with Homebrew, which also puts `imagekit` on your PATH:
+
+```sh
+brew install --cask tretten/imagekit/imagekit
+```
+
 To get the right-click menu, open System Settings › Extensions › Finder (or Quick Actions) and turn on **Compress with ImageKit**.
 
 ## Command line
 
-The app ships a command line tool at `ImageKit.app/Contents/Helpers/imagekit`. Settings › General has an Install button that links it to `/usr/local/bin/imagekit`, so you can just run `imagekit`.
+The command line tool is part of the app: `ImageKit.app/Contents/Helpers/imagekit`. Get it on your PATH one of three ways: Homebrew (above), the **Install** button in Settings › General (links `/usr/local/bin/imagekit`), or call it by its full path. It is signed and notarized with the app and updates with it.
 
 ```sh
-imagekit photo.png                  # photo-min.png beside the original
-imagekit --to avif *.png            # convert everything to AVIF
-imagekit --replace photo.jpg        # replace it; the original goes to .originals
-imagekit --dry-run folder/          # say what would happen, write nothing
-imagekit --inspect photo.heic       # format, size, transparency
+imagekit photo.png                    # photo-min.png beside the original
+imagekit --to avif *.png              # convert to AVIF
+imagekit --level smaller --max 2048 photos/     # a folder, recursive
+imagekit --replace photo.jpg          # replace it; the original goes to .originals
+imagekit --output-dir out/ *.jpg      # results into out/, originals untouched
+imagekit --dry-run folder/            # say what would happen, write nothing
+imagekit --inspect photo.heic         # format, pixel size, alpha, animated
 imagekit --diff before.png after.png  # how alike two pictures are
-imagekit --help                     # every flag, with defaults
+imagekit --json photo.png             # machine-readable
+imagekit --capabilities               # JSON: every option with default and range
+imagekit --help
 ```
 
-The flags match the app: `--level smaller|balanced|careful`, `--max`, `--strip`, `--suffix`, `--again`, SVG and PDF options. `--json` prints one report per file plus a summary line (fields: source, output, state, before, after, saved, note, backup). Exit codes: 0 everything done or unchanged, 1 something failed, 2 bad flags or paths, 3 nothing to process.
+Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF become PNG, JPEG, or AVIF; animated GIF, PNG, and AVIF are left as they are. Files ImageKit already made are skipped unless you pass `--again`.
+
+### Flags
+
+| Flag | Meaning |
+|---|---|
+| `--level smaller\|balanced\|careful` | One setting for all formats (default `balanced`). Sets the picture checks, SVG digits, and PDF quality; the flags below override it. |
+| `--to png\|jpg\|avif` | Raster files become this format. Without it each file keeps its format. |
+| `--convert` | Per file, the smaller of PNG and JPEG when clearly smaller. |
+| `--to pdf\|svg` | Vector files become this format (SVG to PDF, PDF to SVG, AI to PDF or SVG). |
+| `--max N` | Longest side in pixels; smaller pictures are not enlarged. `0` keeps (default). |
+| `--strip` | Drop EXIF, GPS, XMP, and comments from JPEGs. Kept by default. |
+| `--suffix S` | Added to the result name (default `-min`; not empty, no `/` or `..`). |
+| `--replace` | The result takes the file's name; the original moves to `.originals` beside it. Wins over `--suffix`. |
+| `--output-dir DIR` | Results go here (created if missing). Not with `--replace`. |
+| `--again` | Squeeze files ImageKit already made (loses a little more each time). |
+| `--quality Q`, `--tolerance T`, `--blocking B` | Fine control of the checks: SSIM target 0...1, PNG palette error budget 0...1, JPEG block-staircase budget 0...1. |
+| `--effort N`, `--dither`, `--no-dither` | PNG: Zopfli passes 0...15 (default 3); error diffusion (default on). |
+| `--svg-precision N` | Digits kept in SVG coordinates, 1...3. |
+| `--pdf-level L`, `--pdf-dpi N` | PDF picture quality (`smaller\|balanced\|closest`) and the DPI above which images scale down (`0` keeps). |
+| `--no-crop`, `--pdf-crop` | SVG from PDF keeps the whole page; PDF from AI is cut to the drawing. |
+| `--dry-run` | Detect and report; write nothing. |
+| `--inspect` | Report what each file is; encode nothing. |
+| `--json` | NDJSON on stdout: one object per file as it finishes, then `{"summary": ...}`. |
+| `--timeout SECONDS` | Per file. On expiry that file fails and the rest go on. |
+| `--diff a b` | Compare two pictures of the same size (add `--json` for an object). |
+| `--capabilities`, `--version`, `--help` | |
+
+Anything unknown, out of range, or missing a value is an error on stderr, never silently ignored.
+
+### Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Every file done or unchanged |
+| 1 | At least one file failed |
+| 2 | Bad flags or paths |
+| 3 | Nothing to process |
+| 130 | Interrupted (Ctrl-C or SIGTERM); nothing is left half-written |
+
+### JSON output
+
+`imagekit --json photo.png` prints one line per file, then a summary:
+
+```json
+{"source":"/Users/me/photo.png","output":"/Users/me/photo-min.png","state":"done","before":1255328,"after":242489,"saved":1012839,"savedPercent":80.68,"seconds":5.36}
+{"summary":{"done":1,"unchanged":0,"failed":0,"bytesBefore":1255328,"bytesAfter":242489,"files":[...]}}
+```
+
+`state` is `done`, `unchanged`, or `failed`. `reason` explains the last two, `note` carries a caveat (for example "Only the main image was kept."), and `backup` is the moved original when `--replace` was used. Paths are absolute. Sizes are bytes.
+
+`imagekit --inspect --json photo.png` reports `format`, `widthPx`, `heightPx`, `bytes`, `hasAlpha`, `animated`, `stampedByImageKit`, `supported`, and `wouldBecome`. `imagekit --diff --json a b` reports `rmse`, `psnr`, `ssim`, `banding`, `blocking`, `contours`, `smoothError`, `darkHue`, `colourCast`, and a one-line `verdict`.
 
 ## Use with AI agents (MCP)
 
-The same tool is an MCP server, so coding agents can compress, inspect, and compare images themselves:
+The same binary is an MCP server (stdio), so a coding agent can compress, inspect, and compare images itself. If you are an agent, [AGENTS.md](AGENTS.md) is the short version of this section.
+
+Add it to your client (use the full path: GUI clients often lack your PATH):
 
 ```sh
+# Claude Code
 claude mcp add imagekit -- /Applications/ImageKit.app/Contents/Helpers/imagekit mcp
+
+# Codex
+codex mcp add imagekit -- /Applications/ImageKit.app/Contents/Helpers/imagekit mcp
 ```
 
-Tools: `compress` (files or folders), `inspect` (format, size, alpha), `diff` (two pictures plus a verdict), `capabilities` (formats, levels, limits), `undo` (bring back the originals). Safe by default: originals are never replaced unless `replace` is set (they go to `.originals`), and a folder or more than 50 files needs an explicit confirmation.
+Any other MCP client (Cursor, Windsurf, Claude Desktop, and so on): the command is `/Applications/ImageKit.app/Contents/Helpers/imagekit` with the single argument `mcp`:
+
+```json
+{
+  "mcpServers": {
+    "imagekit": {
+      "command": "/Applications/ImageKit.app/Contents/Helpers/imagekit",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+If you installed with Homebrew or the Settings button, `imagekit` on its own works as the command too. Settings › General shows the exact line for your copy of the app, with a Copy button.
+
+### Tools
+
+| Tool | Arguments | Returns |
+|---|---|---|
+| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|pdf\|svg`), `max_side`, `strip_metadata`, `suffix`, `output_dir`, `replace`, `again`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
+| `inspect` | `paths` | per file: format, size in pixels and bytes, alpha, animated, already compressed by ImageKit, what it would become |
+| `diff` | `original`, `result` | RMSE, PSNR, SSIM and six more checks, plus a one-line verdict |
+| `capabilities` | none | formats, levels, every option with default and range |
+| `undo` | `items`: the `source`, `output`, and `backup` values from a `compress` result | per item: restored or failed. Works after a server restart; removes only files ImageKit made |
+
+A good order: `inspect` to see what you have, `compress` with the default level, `diff` when the result matters, `undo` if you do not like it. Pick `level: "careful"` for photos where quality matters most, `"smaller"` for thumbnails and throwaways.
+
+### Safety rules the server enforces
+
+- Originals are never replaced unless `replace: true`. Then the original moves to `.originals` beside the file, never the Trash and never deleted.
+- A folder, or more than 50 files, is refused unless `confirm_batch: true`; the error tells you the count.
+- `/`, the home folder, `~/Library`, and the insides of `.app` bundles are refused. Symlinks are resolved first.
+- One batch at a time. A second `compress` while one runs returns "busy".
+- Failures come back as a normal result with `isError: true` and a message, not as a protocol error.
+
+## Updates
+
+ImageKit checks for updates with Sparkle, and the command line tool and MCP server inside the app update with it. A Homebrew install is kept current by the app itself; `brew upgrade --cask imagekit` also works.
 
 ## Third-party software
 
