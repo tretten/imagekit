@@ -9,6 +9,10 @@ A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and
 </p>
 
 <p align="center">
+  <img src="ImageKit.avif" width="899" alt="The ImageKit window with a compressed file and the Format, Quality, and Save options">
+</p>
+
+<p align="center">
   <a href="https://github.com/tretten/imagekit/releases/latest/download/ImageKit.dmg">
     <img src="download-macos.svg" width="260" alt="Download for macOS">
   </a>
@@ -33,6 +37,10 @@ A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and
 - Marks the files it makes, and compresses them again whenever you ask, in any format. A lossy file loses a little more each pass, so the original is the better source.
 - Command line tool and MCP server for scripts and coding agents, in the same app (see below).
 - Checks for updates with Sparkle, daily and on every launch.
+
+<p align="center">
+  <img src="ImageKit-compare.avif" width="899" alt="Before and after preview with a draggable slider">
+</p>
 
 ## Privacy
 
