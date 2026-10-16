@@ -15,7 +15,7 @@ Other MCP clients: command `/Applications/ImageKit.app/Contents/Helpers/imagekit
 ## MCP tools
 
 - `inspect {paths}`: format, pixel size, bytes, alpha, animated, already compressed, what it would become. Encodes nothing.
-- `compress {paths, level?, target?, max_side?, strip_metadata?, suffix?, output_dir?, replace?, again?, svg_precision?, pdf_dpi?, crop_to_artwork?, confirm_batch?}`: per file `source`, `output`, `state` (done, unchanged, failed), `before`, `after`, `saved`, `savedPercent`, `note`, `backup`.
+- `compress {paths, level?, target?, max_side?, strip_metadata?, suffix?, output_dir?, replace?, svg_precision?, pdf_dpi?, crop_to_artwork?, confirm_batch?}`: per file `source`, `output`, `state` (done, unchanged, failed), `before`, `after`, `saved`, `savedPercent`, `note`, `backup`.
 - `diff {original, result}`: RMSE, PSNR, SSIM and more, plus a verdict. Same pixel size only.
 - `undo {items}`: pass the `source`, `output`, `backup` of a compress result.
 - `capabilities {}`: every option with default and range.
@@ -27,7 +27,7 @@ Typical flow: `inspect` then `compress` (default `level: "balanced"`), `diff` if
 - Results go beside the original with `-min` added. Originals are untouched unless `replace: true` (then the original goes to `.originals` beside it). Do not set `replace` unless the user asked.
 - A folder or more than 50 files needs `confirm_batch: true`. Tell the user the count before you set it. After 200 files in one session without it, every call needs it.
 - `/`, the home folder, `~/Library` and `.app` insides are refused.
-- A file ImageKit already made is skipped ("Already compressed by ImageKit."); `again: true` squeezes it again and loses a little more.
+- A file ImageKit already made is compressed again like any other, and each lossy pass loses a little more. Do not run it twice on the same file; `inspect` shows `stampedByImageKit`.
 - Animated GIF, PNG and AVIF are left unchanged. `state: "unchanged"` with a `note` is a normal outcome (nothing smaller was found), not an error.
 - One batch at a time. "busy" means retry after the running one ends.
 - Tool errors have `isError: true` and a message.

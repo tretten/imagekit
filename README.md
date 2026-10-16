@@ -30,7 +30,7 @@ A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and
 - Ways in: drag onto the window or the Dock icon, Choose…, the Finder right-click menu (Quick Actions › Compress with ImageKit), a global shortcut that compresses what is selected in Finder (⌥⌘K by default, configurable), and the menu bar icon.
 - Works in the background: files dropped on the menu bar icon, sent by the shortcut or by the Quick Action are compressed with your settings without opening the window, the menu bar icon shows the progress as a percentage, and a notification says what was saved.
 - Lives in the menu bar: the Dock icon is there while the window is open and goes away when you close it.
-- Marks the files it makes, so a compressed file is not squeezed a second time and does not lose more quality.
+- Marks the files it makes, and compresses them again whenever you ask, in any format. A lossy file loses a little more each pass, so the original is the better source.
 - Command line tool and MCP server for scripts and coding agents, in the same app (see below).
 - Checks for updates with Sparkle, daily and on every launch.
 
@@ -68,7 +68,7 @@ imagekit --capabilities               # JSON: every option with default and rang
 imagekit --help
 ```
 
-Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF become PNG, JPEG, or AVIF; animated GIF, PNG, and AVIF are left as they are. Files ImageKit already made are skipped unless you pass `--again`.
+Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF become PNG, JPEG, or AVIF; animated GIF, PNG, and AVIF are left as they are. A file ImageKit already made is compressed like any other, and each lossy pass loses a little more.
 
 ### Flags
 
@@ -83,7 +83,6 @@ Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF 
 | `--suffix S` | Added to the result name (default `-min`; not empty, no `/` or `..`). |
 | `--replace` | The result takes the file's name; the original moves to `.originals` beside it. Wins over `--suffix`. |
 | `--output-dir DIR` | Results go here (created if missing). Not with `--replace`. |
-| `--again` | Squeeze files ImageKit already made (loses a little more each time). |
 | `--quality Q`, `--tolerance T`, `--blocking B` | Fine control of the checks: SSIM target 0...1, PNG palette error budget 0...1, JPEG block-staircase budget 0...1. |
 | `--effort N`, `--dither`, `--no-dither` | PNG: Zopfli passes 0...15 (default 3); error diffusion (default on). |
 | `--svg-precision N` | Digits kept in SVG coordinates, 1...3. |
@@ -154,7 +153,7 @@ If you installed with Homebrew or the Settings button, `imagekit` on its own wor
 
 | Tool | Arguments | Returns |
 |---|---|---|
-| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|pdf\|svg`), `max_side`, `strip_metadata`, `suffix`, `output_dir`, `replace`, `again`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
+| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|pdf\|svg`), `max_side`, `strip_metadata`, `suffix`, `output_dir`, `replace`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
 | `inspect` | `paths` | per file: format, size in pixels and bytes, alpha, animated, already compressed by ImageKit, what it would become |
 | `diff` | `original`, `result` | RMSE, PSNR, SSIM and six more checks, plus a one-line verdict |
 | `capabilities` | none | formats, levels, every option with default and range |
