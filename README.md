@@ -35,7 +35,7 @@ A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and
 - Works in the background: files dropped on the menu bar icon, sent by the shortcut or by the Quick Action are compressed with your settings without opening the window, the menu bar icon shows the progress as a percentage, and a notification says what was saved.
 - Lives in the menu bar: the Dock icon is there while the window is open and goes away when you close it.
 - Marks the files it makes, and compresses them again whenever you ask, in any format. A lossy file loses a little more each pass, so the original is the better source.
-- Command line tool and MCP server for scripts and coding agents, in the same app (see below).
+- Command line tool and MCP server for scripts and coding agents, in the same app (see below). Settings › Agents adds the MCP server to Claude Code, Claude Desktop, Codex, Gemini CLI, Cursor, Windsurf, or OpenCode with one click, after showing what it will write.
 - Checks for updates with Sparkle, daily and on every launch.
 
 <p align="center">
@@ -156,7 +156,9 @@ Any other MCP client (Cursor, Windsurf, Claude Desktop, and so on): the command 
 }
 ```
 
-If you installed with Homebrew or the Settings button, `imagekit` on its own works as the command too. Settings › General shows the exact line for your copy of the app, with a Copy button.
+Or skip the config files: Settings › Agents lists the clients found on your Mac. Add shows the file and the entry first, keeps the old file beside it as `<name>.imagekit-backup`, and leaves a config it cannot read alone. Update fixes the path after you move the app, Remove takes the entry out, and Copy gives the usual `mcpServers` JSON for any other client.
+
+If you installed with Homebrew or the Settings button, `imagekit` on its own works as the command too.
 
 ### Tools
 
