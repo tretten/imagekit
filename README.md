@@ -26,10 +26,10 @@ A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and
 - Illustrator (AI) files convert to PDF (artboard and transparency kept, private Illustrator data dropped) or to SVG for the web, with an option to crop the empty margin around the artwork. The SVG conversion covers paths, strokes, gradients, clipping, and CMYK and spot colors, and a note on the row says what it could not carry over, such as live text. Outline the text in Illustrator first.
 - Three quality levels, Smaller, Balanced, and Closest, shared by both modes: they set the PNG, JPEG, and AVIF checks, the digits kept in SVG, and the picture quality in PDF (75, 85, and 95).
 - Compress Again: change a setting and run the last batch again from the originals. A result in another format stays beside the new one.
-- Keeps each file's format, picks the smaller of PNG and JPEG per file, or converts everything to PNG, JPEG, or AVIF.
+- Keeps each file's format, picks the smaller of PNG and JPEG per file, or converts everything to PNG, JPEG, or AVIF. JPEG XL (under More…) turns JPEGs into smaller files without changing a pixel, and the original JPEG can be rebuilt from it; not every app opens JPEG XL yet.
 - Limits the longest side of large images (1024, 2048, 2560, or 4096 px), and removes camera and location data from JPEGs. A photo saved sideways is rotated upright first.
 - Safe by default: the result is saved beside the original with a suffix you choose (`-min`). Or it replaces the file and the original goes to the Trash or to an `.originals` folder. Undo puts the last batch back.
-- Before and after preview with a draggable slider, a Fit view, and a 100% view you can pan, so you can judge the quality at real pixels. Arrow keys step through the batch.
+- Before and after preview with a draggable slider, a Fit view, and zoom to 100%, 200%, 400%, and 800% (or pinch) that you can pan, so you can judge the quality at real pixels. Arrow keys step through the batch.
 - Folders and batches: a dropped folder or more than ten files waits in a list until you press Compress. Files run in parallel on all cores, each row fills as it progresses, and Stop cancels the rest.
 - Ways in: drag onto the window or the Dock icon, Choose…, the Finder right-click menu (Quick Actions › Compress with ImageKit), a global shortcut that compresses what is selected in Finder (⌥⌘K by default, configurable), and the menu bar icon.
 - Works in the background: files dropped on the menu bar icon, sent by the shortcut or by the Quick Action are compressed with your settings without opening the window, the menu bar icon shows the progress as a percentage, and a notification says what was saved.
@@ -84,7 +84,7 @@ Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF 
 | Flag | Meaning |
 |---|---|
 | `--level smaller\|balanced\|careful` | One setting for all formats (default `balanced`; `closest` is an alias for `careful`). Sets the picture checks, SVG digits, and PDF quality; the flags below override it. |
-| `--to png\|jpg\|avif` | Raster files become this format. Without it each file keeps its format. |
+| `--to png\|jpg\|avif\|jxl` | Raster files become this format; `jxl` is lossless and takes JPEGs only. Without it each file keeps its format. |
 | `--convert` | Per file, the smaller of PNG and JPEG when clearly smaller. |
 | `--to pdf\|svg` | Vector files become this format (SVG to PDF, PDF to SVG, AI to PDF or SVG). |
 | `--max N` | Longest side in pixels; smaller pictures are not enlarged. `0` keeps (default). |
@@ -164,7 +164,7 @@ If you installed with Homebrew or the Settings button, `imagekit` on its own wor
 
 | Tool | Arguments | Returns |
 |---|---|---|
-| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|pdf\|svg`), `max_side`, `strip_metadata`, `suffix`, `output_dir`, `replace`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
+| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|jxl\|pdf\|svg`), `max_side`, `strip_metadata`, `suffix`, `output_dir`, `replace`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
 | `inspect` | `paths` | per file: format, size in pixels and bytes, alpha, animated, already compressed by ImageKit, what it would become |
 | `diff` | `original`, `result` | RMSE, PSNR, SSIM and six more checks, plus a one-line verdict |
 | `capabilities` | none | formats, levels, every option with default and range |
