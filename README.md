@@ -89,6 +89,7 @@ Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF 
 | `--to pdf\|svg` | Vector files become this format (SVG to PDF, PDF to SVG, AI to PDF or SVG). |
 | `--max N` | Longest side in pixels; smaller pictures are not enlarged. `0` keeps (default). |
 | `--strip` | Drop EXIF (with GPS), IPTC, XMP, and comments from JPEGs. Kept by default. |
+| `--sdr` | Drop the HDR gain map of an iPhone HEIC or Ultra HDR JPEG. Kept by default in JPEG and AVIF results (macOS 15+). |
 | `--suffix S` | Added to the result name (default `-min`; not empty, no `/` or `..`). |
 | `--replace` | The result takes the file's name; the original moves to `.originals` beside it. Wins over `--suffix`. |
 | `--output-dir DIR` | Results go here (created if missing). Not with `--replace`. |
@@ -164,7 +165,7 @@ If you installed with Homebrew or the Settings button, `imagekit` on its own wor
 
 | Tool | Arguments | Returns |
 |---|---|---|
-| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|jxl\|pdf\|svg`), `max_side`, `strip_metadata`, `suffix`, `output_dir`, `replace`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
+| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|jxl\|pdf\|svg`), `max_side`, `strip_metadata`, `keep_hdr`, `suffix`, `output_dir`, `replace`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
 | `inspect` | `paths` | per file: format, size in pixels and bytes, alpha, animated, already compressed by ImageKit, what it would become |
 | `diff` | `original`, `result` | RMSE, PSNR, SSIM and six more checks, plus a one-line verdict |
 | `capabilities` | none | formats, levels, every option with default and range |
