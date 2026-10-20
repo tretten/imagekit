@@ -102,6 +102,7 @@ Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF 
 | `--inspect` | Report what each file is; encode nothing. |
 | `--json` | NDJSON on stdout: one object per file as it finishes, then `{"summary": ...}`. |
 | `--timeout SECONDS` | Per file. On expiry that file fails and the rest go on. |
+| `--verify` | Add a `quality` object (the `--diff` numbers and verdict) to each done file's report line, so a script can reject a result. Not for resized files. Slower. |
 | `--undo [FILE]` | Take back a run from its `--json` report (FILE, or stdin). Brings originals back from `.originals` and removes the results ImageKit made; exit 1 if any item was refused. Must be the first argument. |
 | `--diff a b` | Compare two pictures of the same size (add `--json` for an object). Must be the first argument. |
 | `--capabilities`, `--version`, `--help` | |
@@ -166,7 +167,7 @@ If you installed with Homebrew or the Settings button, `imagekit` on its own wor
 
 | Tool | Arguments | Returns |
 |---|---|---|
-| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|jxl\|pdf\|svg`), `max_side`, `strip_metadata`, `keep_hdr`, `suffix`, `output_dir`, `replace`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
+| `compress` | `paths` (required, files or folders); optional `level` (`smaller\|balanced\|careful`), `target` (`same\|smart\|png\|jpeg\|avif\|jxl\|pdf\|svg`), `max_side`, `strip_metadata`, `keep_hdr`, `suffix`, `output_dir`, `replace`, `svg_precision`, `pdf_dpi`, `crop_to_artwork`, `verify`, `confirm_batch` | per file: `source`, `output`, `state`, `before`, `after`, `saved`, `savedPercent`, `note`, `backup`; plus totals |
 | `inspect` | `paths` | per file: format, size in pixels and bytes, alpha, animated, already compressed by ImageKit, what it would become |
 | `diff` | `original`, `result` | RMSE, PSNR, SSIM and six more checks, plus a one-line verdict |
 | `capabilities` | none | formats, levels, every option with default and range |
