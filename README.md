@@ -102,6 +102,7 @@ Takes PNG, JPEG, AVIF, SVG, PDF, AI, and (read-only) HEIC and GIF. HEIC and GIF 
 | `--inspect` | Report what each file is; encode nothing. |
 | `--json` | NDJSON on stdout: one object per file as it finishes, then `{"summary": ...}`. |
 | `--timeout SECONDS` | Per file. On expiry that file fails and the rest go on. |
+| `--undo [FILE]` | Take back a run from its `--json` report (FILE, or stdin). Brings originals back from `.originals` and removes the results ImageKit made; exit 1 if any item was refused. Must be the first argument. |
 | `--diff a b` | Compare two pictures of the same size (add `--json` for an object). Must be the first argument. |
 | `--capabilities`, `--version`, `--help` | |
 
