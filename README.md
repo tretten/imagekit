@@ -7,7 +7,7 @@
 <p align="center">
 A Mac app, command line tool, and MCP server that make PNG, JPEG, AVIF, SVG, and PDF files smaller without changing how they look, and turns Illustrator logos into PDF or SVG. Drop files or folders on it, or right-click a file in Finder, and compare the result with the original before you keep it. Everything runs on your Mac; nothing is uploaded.
 </p>
-
+<p align="center"><a href="https://www.trymacapps.com" target="_blank" rel="noopener"><img src="https://www.trymacapps.com/badge.png" alt="Featured on TryMacApps" width="200" height="67" /></a></p>
 <p align="center">
   <img src="ImageKit.avif" width="899" alt="The ImageKit window with a compressed file and the Format, Quality, and Save options">
 </p>
